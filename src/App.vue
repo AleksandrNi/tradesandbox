@@ -1,28 +1,40 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app>
+    <app-toolbar dark></app-toolbar>
+    <v-container xs12 text-xs-center >
+      <v-layout row wrap>
+        <keep-alive>
+          <router-view></router-view>
+        </keep-alive>
+        <!-- <app-maincard></app-maincard>
+        <app-stocks></app-stocks>
+        <app-portfolio></app-portfolio> -->
+      </v-layout>
+    </v-container>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+
 
 export default {
-  name: 'app',
+  data () {
+    return {
+      selectedTab: 'Main'
+    }
+  },
+  methods: {
+
+  },
   components: {
-    HelloWorld
-  }
+    // appMain: () => import('./components/MainCard'),
+    // appPortfolio: () => import('./components/Portfolio'),
+    // appFavorite: () => import('./components/Favorite'),
+    // appStocks: () => import('./components/Stocks'),
+    appToolbar: () => import('./components/toolbar/Toolbar')
+  },
+
 }
 </script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style scoped>
 </style>
