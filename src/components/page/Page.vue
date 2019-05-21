@@ -7,7 +7,7 @@
         <v-layout row wrap>
 
           <!-- path -->
-          <v-flex xs6 class='my-1 text-xs-left'>
+          <v-flex xs6 class='my-1 px-1 text-xs-left'>
             <div class="hidden-sm-and-down pb-3" style='font-size:1.1rem'>
               <a
               style='cursor:pointer'
@@ -27,57 +27,17 @@
             </span>
           </v-flex>
 
-          <!-- quote -->
+          <!-- chart | quote -->
           <v-flex xs12 md8 class='px-1 text-xs-left'>
-
-            <div>
-              <h5>Quote</h5>
-            </div>
-
-            <!-- chart -->
-            <GChart
-              type="LineChart"
-              :data="chartData"
-              :options="chartOptions"
+            <app-chart
+            :chartData='chartData'
+            :companyTable='companyTable'
             />
-            <v-expansion-panel style='box-shadow: none;'>
-             <v-expansion-panel-content
-              style='background-color: #81C784'
-              v-for="(item,i) in 1"
-              :key="i"
-             >
-               <template v-slot:header>
-                 <div>Daily average price, $</div>
-               </template>
-
-               <!-- table -->
-               <v-flex >
-
-                   <v-data-table
-
-                     class="white--text mytable"
-                     hide-actions
-                     search
-                     :headers="headers"
-                      hide-headers
-                     :items="companyTable"
-                   >
-                     <template v-slot:items="props" expand>
-                       <td class="text-xs-left">{{ props.item[0] }}</td>
-                       <td class="text-xs-left">{{ props.item[1] }}</td>
-                     </template>
-                   </v-data-table>
-
-               </v-flex>
-
-
-             </v-expansion-panel-content>
-           </v-expansion-panel>
          </v-flex>
 
          <!-- comments -->
-         <v-flex xs12 md4 class='px-1 text-xs-left'>
-           <app-comments :ticker='ticker'></app-comments>
+         <v-flex v-if='getPageFromMethod(["favorite", "portfolio"])' xs12 md4 class='px-1 text-xs-left'>
+           <app-comments :key='ticker' />
          </v-flex>
 
         <!-- bargain card -->
@@ -126,53 +86,14 @@ export default {
         portfolio: {buttons: ['buy', 'sell'], icons: []},
         ckeckedIcon: ['bookmark', 'delete']
       },
-      company: '',
-      companyNews: '',
       companyQuote:'',
-
-      companyTable: [],
-      chartData: [],
-      chartOptions: {
-        backgroundColor: {
-        gradient: {
-          // Start color for gradient.
-          color1: '#81C784',
-          // Finish color for gradient.
-          color2: '#fbf6a7',
-          // Where on the boundary to start and
-          // end the color1/color2 gradient,
-          // relative to the upper left corner
-          // of the boundary.
-          x1: '0%', y1: '100%',
-          x2: '100%', y2: '0%',
-          // If true, the boundary for x1,
-          // y1, x2, and y2 is the box. If
-          // false, it's the entire chart.
-          useObjectBoundingBoxUnits: true
-        },
-            // stroke: '#E4E4E4',
-            // strokeWidth: 2
-      },
-        chart: {
-          title: "Company chart",
-          subtitle: "Stock price",
-          hAxis: {
-              direction: -1,
-              slantedText: true,
-              slantedTextAngle: 90 // here you can even use 180
-          }
-        }
-      },
-      headers: [
-        { text: 'Date', value: 'date', align: 'left', sortable: false, },
-        { text: 'Price, $', value: 'price', sortable: false, },
-      ],
     }
   },
   components: {
     appNewscard: () => import('../card/NewsCard'),
-    appComments: () => import('../comments/Comments'),
+    appComments: () => import('../card/Comments'),
     appBargaincard: () => import('../card/BargainCard'),
+    appChart: () => import('../card/Chart'),
   },
   methods: {
     getPageFromMethod (params) {
@@ -209,71 +130,34 @@ export default {
       return this.$store.getters[types.GET_PAGE_FROM]
     },
     ticker () {
-      return  this.$route.params.ticker ? this.$route.params.ticker.toUpperCase() : ''
+      return  this.$route.params.ticker ? this.$route.params.ticker.toLowerCase() : ''
     },
-    getCompanyParam() {
-      return () => {
+    company() {
+      return (() => {
         const company = this.$store.getters[types.GET_COMPANY_PARAM_BY_TICKER_ID]({
           ticker: this.ticker,
           pageFrom: this.pageFrom,
         })
+
         return company
-      }
+      })()
     },
-    getCompanyChart() {
-      return () => {
-        // chart block
-        if(this.company && this.company.length) {
-          const chartLabel = this.company[0][0][this.ticker]['chart'].map(obj => {
-            return obj["label"]
-          })
-          const chartData = this.company[0][0][this.ticker]['chart'].map(obj => {
-            return obj["vwap"]
-          })
+    companyNews () {return this.company && this.company[0] ? this.company[0][0][this.ticker]['news'] : []},
+    companyTable () {return this.company && this.company[0] ? this.company[0][0][this.ticker]['mixed']['table'] : []},
+    chartData () {return this.company && this.company[0] ? this.company[0][0][this.ticker]['mixed']['chart'] : []}
 
-          this.chartLabel = chartLabel
-          this.chartData = chartData
-
-          let titleArray = []
-          titleArray[0] = 'Month'
-          titleArray[1] = this.ticker + ', $'
-          let dataArray = [[...titleArray]]
-
-          for(let i = 0; i < chartLabel.length; i++) {
-            let tempArray = []
-            tempArray.push(chartLabel[i])
-            tempArray.push(chartData[i])
-            dataArray.push(tempArray)
-          }
-            return {
-              companyTable: ([...dataArray]).slice(1).reverse(),
-              chartData:dataArray
-            }
-        }
-      }
-    },
-    getCompanyNews() {
-      return () => {
-        // news block
-        if(this.ticker) {
-          const companyNews = (this.company && this.company[0]) ? this.company[0][0][this.ticker]['news'] : ''
-          return companyNews
-        }
-      }
-    },
 
   },
 
-  created() {
+  async created() {
+    // check/set pageFrom
+
     // type [chart, qoute, news]
-    this.pathMethod
-    this.company = this.getCompanyParam()
-    this.companyNews = this.getCompanyNews()
-    this.companyTable = this.getCompanyChart()['companyTable']
-    this.chartData = this.getCompanyChart()['chartData']
-
-
-
+    if(!this.pageFrom) {
+      this.pathMethod({pageFrom:"stocks"})
+      //load data from db
+      await this.$store.dispatch(types.ACTION_SEND_QUERY, this.ticker)
+    }
   },
 }
 </script>

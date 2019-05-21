@@ -55,13 +55,13 @@
     <hr v-if='getPageFromMethod(["favorite", "stocks"])' style='margin-top:1.5rem;'>
 
     <span v-if='getPageFromMethod(["stocks"])'>
-      <v-btn v-for='type in propsParams.stocks.icons' icon>
-        <v-icon out-in @click='iconAction(type, "stocks")'>{{ type }}</v-icon>
+      <v-btn v-for='type in icons' icon>
+        <v-icon out-in @click='iconAction(type, pageFrom)'>{{ type }}</v-icon>
       </v-btn>
     </span>
 
     <span v-if='getPageFromMethod(["favorite"])'>
-      <v-btn v-for='type in propsParams.favorite.icons' icon>
+      <v-btn v-for='type in icons' icon>
         <v-icon @click='iconAction(type, "favorite")'>{{ type }}</v-icon>
       </v-btn>
     </span>
@@ -81,10 +81,10 @@ export default {
   data () {
     return {
       propsParams: {
-        stocks: {buttons: [], icons: ['bookmark_border','delete_outline']},
-        favorite: {buttons: ['buy'], icons: ['delete_outline']},
-        portfolio: {buttons: ['buy', 'sell'], icons: []},
-        ckeckedIcon: ['bookmark', 'delete']
+        stocks: {buttons: [], },
+        favorite: {buttons: ['buy'], },
+        portfolio: {buttons: ['buy', 'sell'], },
+        checkedIcon: ['bookmark', 'delete']
       },
       dropdownButton: false,
       dialogTrigger: false,
@@ -129,6 +129,7 @@ export default {
       addTickerToFavorite: types.ACTION_ADD_TICKER_TO_FAVORITE,
       removeCompanyFromStocks: types.ACTION_REMOVE_COMPANY_FROM_STOCKS,
       removeCompanyFromFavorite: types.ACTION_REMOVE_COMPANY_FROM_FAVORITE,
+      removeCompanyFromDB: types.ACTION_REMOVE_COMPANY_FROM_DB,
     }),
     getPageFromMethod (params) {
       const storePageFrom = this.pageFrom
@@ -173,23 +174,15 @@ export default {
         return this.sellButton()
       }
     },
-    iconAction(type, activePage) {
-      if(activePage === 'stocks') {
-        if (type === 'bookmark_border') {
-          this.propsParams.stocks.icons[0] = 'bookmark'
-          return this.addTickerToFavorite(this.company)
-        } else if(type === 'bookmark') {
-          this.propsParams.stocks.icons[0] = 'bookmark_border'
-          return this.removeCompanyFromFavorite(this.company)
-        }
+    async iconAction(type, pageFrom) {
 
-      } else if (activePage === 'stocks' && type === 'delete_outline') {
-        this.propsParams.stocks.icons[1] = 'delete'
-        return this.removeCompanyFromStocks(this.company[1])
+      if (type === 'bookmark_border') {
+        this.addTickerToFavorite(this.company)
+        return true
 
-      } else if(activePage === 'favorite' && type === 'delete_outline') {
-        this.propsParams.portfolio.icons[0] = 'delete'
-        return this.removeCompanyFromFavorite(this.company[1])
+      } else if (type === 'bookmark' || type === 'delete_outline') {
+        this.removeCompanyFromDB({ticker: this.company[1], pressedButton: type, pageFrom: this.pageFrom})
+        return true
       }
       return false
     },
@@ -197,7 +190,21 @@ export default {
   computed: {
     pageFrom () {
       return this.$store.getters[types.GET_PAGE_FROM]
+    },
+    icons () {
+        const favoriteStocksTickers = this.$store.getters[types.GET_FAVORITE_TICKERS_STOCKS]
+        const favoriteTickerExists = favoriteStocksTickers.some(ticker => ticker.toLowerCase() === this.company[1].toLowerCase())
+
+        if(this.pageFrom === 'stocks') {
+          return favoriteTickerExists ? ['bookmark','delete_outline'] : ['bookmark_border','delete_outline']
+
+        } else if(this.pageFrom === 'favorite') {
+          return favoriteTickerExists ? ['delete_outline'] : ['delete_outline']
+        }
     }
+  },
+  created () {
+
   }
 }
 </script>

@@ -175,7 +175,7 @@ export default {
 
     getPageFromMethod (params) {
       for (let arg of params) {
-        if(arg === this.$route.params.pageFrom) return arg
+        if(arg === this.$store.getters[types.GET_PAGE_FROM]) return arg
       }
     },
 
@@ -224,6 +224,7 @@ export default {
 
       if(check) {
         this.buyTickerAction({
+          type: 'buy',
           ticker: ticker,
           qtty: this.textFieldParamsQtty.inputValue,
           price: this.textFieldParamsPrice.inputValue,

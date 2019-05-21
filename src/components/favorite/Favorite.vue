@@ -1,12 +1,14 @@
 <template lang="html">
-<v-flex xs12 class='px-3' grid-list-md text-xs-left>
-  <v-layout row wrap class='px-3'>
-    <app-card
-     :companies='favoriteStocks'
-     sourcePage='favorite'
-    ></app-card>
-  </v-layout>
-</v-flex>
+  <v-container>
+    <v-flex xs12 class='px-3' grid-list-md text-xs-left>
+      <v-layout row wrap class='px-3'>
+        <app-card
+        :companies='favoriteStocks'
+        sourcePage='favorite'
+        ></app-card>
+      </v-layout>
+    </v-flex>
+  </v-container>
 </template>
 
 <script>
@@ -17,7 +19,6 @@ import {pathMethod} from '../../methods/PathMethod'
 export default {
   data() {
     return {
-
     }
   },
   components: {

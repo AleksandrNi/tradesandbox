@@ -7,7 +7,6 @@ export default {
   },
   // pageFrom
   [types.GET_PAGE_FROM]: state => {
-    console.log(state.pageFrom);
     return state.pageFrom
   },
   // pageFrom
@@ -21,98 +20,45 @@ export default {
     return state.portfolio
   },
 
-  //Favorite.vue
+  //Favorite
   [types.GET_FAVORITE_STOCKS]: state => {
-    const favoriteStocks = state.favoriteStocks.map(companyName => {
-      const filteredCompanies = state.companies.filter(company => {
-          return company[1] === companyName
-      })
-      return filteredCompanies[0]
-    })
-    return favoriteStocks
+    return state.favoriteStocks
+  },
+  //Favorite tickers
+  [types.GET_FAVORITE_TICKERS_STOCKS]: state => {
+    return state.favoriteStocksTickers
   },
   // Stocks
   [types.GET_QUERY_STOCKS]: state => {
     return state.queryStock
   },
   // Comments
-  [types.GET_COMMENTS_BY_TICKER_ID]: state => {
-    return state.comments
+  [types.GET_COMMENTS_GET_COMMENTS_BY_TICKER]: state => {
+    return params => {
+      const commentsByTicker = state.comments.map(comment => comment[1] === params ? comment : '')
+      return commentsByTicker
+    }
   },
-  // Page -  News
+  // Page
   [types.GET_COMPANY_PARAM_BY_TICKER_ID]: state => {
     return params => {
 
       let company;
+        if(state.pageFrom === 'stocks') {
+          const indexExists = state.queryStock.findIndex(company => company[1].toLowerCase() === params.ticker.toLowerCase())
+          company = [state.queryStock[indexExists]]
 
-            if(params.pageFrom === 'stocks') {
-              company = state.queryStock.map(company => company[1].toLowerCase() === params.ticker.toLowerCase()
-              ? company
-              : false)
-            }
-            else if (params.pageFrom === 'favorite') {
-                                                      // 'FB'                            // 'fb'
-              const ticker = state.favoriteStocks.map(ticker => ticker.toLowerCase() === params.ticker.toLowerCase()
-              ? ticker
-              : false)
+        } else if (state.pageFrom === 'favorite') {
+          const indexExists = state.favoriteStocksTickers.findIndex(ticker => ticker.toLowerCase() === params.ticker.toLowerCase())
+          company = [state.favoriteStocks[indexExists]]
 
-                if(ticker[0]) {
-                  company = state.companies.map(company => company[1] === ticker[0]
-                ? company
-                : false)
-                }
+        } else if (state.pageFrom === 'portfolio') {
+          const indexExists = state.portfolioTickers.findIndex(index => index.toLowerCase() === params.ticker.toLowerCase())
+          company = [state.portfolio[indexExists]]
 
-            } else if (params.pageFrom === 'portfolio') {
-              const ticker = state.portfolio.map(ticker => ticker.toLowerCase() === params.ticker.toLowerCase()
-              ? ticker
-              : false)
-
-                if(ticker[0]) {
-                  company = state.companies.map(company => company[1] === ticker[0]
-                ? company
-                : false)
-                }
-            }
-            return company
+        }
+        return company
     }
   },
-//   [types.GET_COMPANY_BY_TICKER_ID]: state => {
-//     return params => {
-//     // params = {ticker: "fb", pageFrom: "stocks"}
-//     let company;
-//     let ticker;
-//
-//       // stocks
-//     if(params.pageFrom === 'stocks') {
-//       company = state.queryStock.map(company => company[1].toLowerCase() === params.ticker.toLowerCase()
-//       ? company
-//       : false)
-//
-//       // favorite
-//     } else if (params.pageFrom === 'favorite') {
-//       ticker = state.favoriteStocks.map(ticker => ticker === params.ticker
-//       ? ticker
-//       : false)
-//       if(ticker[0]) {
-//         company = state.companies.map(company => company[1] === ticker[0]
-//       ? company
-//       : false)
-//       }
-//
-//       // portfolio
-//     } else if (params.pageFrom === 'portfolio') {
-//         const ticker = state.portfolio.map(ticker => ticker === params.ticker
-//         ? ticker
-//         : false)
-//         if (ticker[0]) {
-//           company = state.companies.map(company => company[1] === ticker[0]
-//           ? company
-//           : false)
-//         }
-//       }
-//
-//       return company
-//   }
-// }
 
 };

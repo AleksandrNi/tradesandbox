@@ -16,18 +16,20 @@ export const store = new Vuex.Store({
   state: {
     exists: false,
     funds: 10000,
-    // array of tickers: ['fb','aapl', ...]
+    // userDeals [{Ticker, qtty, price, priceTarget, priceTargetGrow, priceLow, priceLowGrow}]
+    userDeals: [],
+    // array of arrays [{}, ticker]
     portfolio: [],
     // array of tickers: ['fb','aapl', ...]
-    favoriteStocks: [],
+    portfolioTickers: [],
     // array of arrays [{}, ticker]
-    companies: [],
+    // array of tickers: ['fb','aapl', ...]
+    favoriteStocks: [],
+    favoriteStocksTickers: [],
     // [{}, ticker]
     queryStock: [],
     // array of arrays [ [{date: '', comment: ''}, {date: '', comment: ''}], ticker] ]
     comments: [],
-    // userDeals [{Ticker, qtty, price, priceTarget, priceTargetGrow, priceLow, priceLowGrow}]
-    userDeals: [],
 
     // pathMethods
     pageTo: '',

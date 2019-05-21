@@ -9,6 +9,7 @@ export default {
   // pageFrom
   [types.MUTATE_PAGE_FROM]: (state, payload) => {
     state.pageFrom = payload
+
   },
   // setActiveTicker
   [types.MUTATE_SET_ACTIVE_TICKER]: (state, payload) => {
@@ -18,51 +19,88 @@ export default {
 
   [types.MUTATE_SEND_QUERY]: (state, payload) => {
     // payload = [{}, ticker]
-    const exists = state.queryStock.some(company => company[1] === payload[1])
-    if (exists) return
-    state.queryStock = [...state.queryStock, payload]
-    console.log(state.queryStock[0][0]['FB']['news']);
+    const indexExists = state.queryStock.findIndex((company, index) => company[1] === payload[1])
+    indexExists !== -1 ? state.queryStock[indexExists] =  payload : state.queryStock.push(payload)
+  },
+
+  // Favorite
+  // GET FAVORITE COMPANIES
+  [types.MUTATE_GET_FAVORITE_COMPANIES]: (state, payload) => {
+    // [ ['tiker1','ticker2'], ['','aapl'] ]
+    // [[companiesArrayPortfolio, userDeals, tickersPortfolio], [companiesArrayFavorite, tickersFavorite]]
+    state.portfolio = [...payload[0][0]]
+    console.log(state.portfolio[0]);
+    state.userDeals = [...payload[0][1]]
+    state.portfolioTickers = [...payload[0][2]]
+
+    state.favoriteStocks = [...payload[1][0]]
+    console.log(state.favoriteStocks[0]);
+    state.favoriteStocksTickers = [...payload[1][1]]
   },
 
   [types.MUTATE_ADD_TICKER_TO_FAVORITE]: (state, payload) => {
-    if(state.favoriteStocks.length){
-      const exists = state.favoriteStocks.some(companyName => companyName === payload[1] )
-      if (exists) return false
+    if(payload[0] === 'ticker_exists') {
+      return
     }
-    state.companies.push(payload)
-    state.favoriteStocks.push(payload[1]);
-  },
 
-  [types.MUTATE_REMOVE_COMPANY_FROM_STOCKS]: (state, payload) => {
-    const index = state.queryStock.findIndex(company => company[1] === payload)
-    state.queryStock = [...state.queryStock.splice(0, index), ...state.queryStock.splice(index + 1) ]
+    state.favoriteStocks.push(payload)
+    state.favoriteStocksTickers.push(payload[1]);
   },
+  // remove company [stocks, favorite] from db
+  [types.MUTATE_REMOVE_COMPANY_FROM_DB]: (state, payload) => {
+    console.log(payload);
+    // ["ticker_removed_from_favorite", "stocks", 'fb']
+    if(Array.isArray(payload) && payload[0] === 'ticker_removed_from_favorite' && payload[1] === 'stocks'
+    || Array.isArray(payload) && payload[0] === "ticker_removed_from_favorite" && payload[1] === 'favorite') {
+      const tickerIndex = state.favoriteStocksTickers.findIndex(ticker => ticker === payload[2])
 
-  [types.MUTATE_REMOVE_COMPANY_FROM_FAVORITE]: (state, payload) => {
-    const indexStock = state.favoriteStocks.findIndex(ticker => ticker === payload[1])
-    state.favoriteStocks = [...state.favoriteStocks.splice(0, indexStock), ...state.favoriteStocks.splice(indexStock + 1) ]
-
-    const indexCompanies = state.companies.findIndex(company => company[1] === payload[1])
-    state.companies = [...state.companies.splice(0, indexCompanies), ...state.companies.splice(indexCompanies + 1) ]
+      if(!tickerIndex === -1) return
+      state.favoriteStocksTickers = [
+        ...state.favoriteStocksTickers.slice(0,tickerIndex),
+        ...state.favoriteStocksTickers.slice(tickerIndex + 1)
+      ]
+      state.favoriteStocks = [
+        ...state.favoriteStocks.slice(0,tickerIndex),
+        ...state.favoriteStocks.slice(tickerIndex + 1)
+      ]
+    } else if(Array.isArray(payload) && payload[0] === "ticker_should_be_removed_from_stocks" && payload[1] === 'stocks') {
+      console.log(state.queryStock);
+      const tickerIndex = state.queryStock.findIndex(companyArray => companyArray[1] === payload[2])
+      if(tickerIndex === -1) return
+      console.log(tickerIndex);
+      state.queryStock = [...state.queryStock.slice(0, tickerIndex), ...state.queryStock.slice(tickerIndex + 1)]
+      console.log(state.queryStock);
+    }
   },
+  // Comments
   [types.MUTATE_COMMENT_SEND_COMMENT]: (state, payload) => {
-
-    // if(state.comments.length) {
-    //   const companyIndex = state.comments.findIndex((commentBlock, index) => {
-    //     if (commentBlock[1] === payload) return index
-    //   })
-    //   console.log(companyIndex);
-    //   if(companyIndex !== -1){
-    //     // return state.company[companyIndex][0].push(payload[0])
-    //   }
-    // }
+    // [[{},ticker]]
+    console.log(payload);
+    state.comments.push(payload)
+  },
+  [types.MUTATE_COMMENTS_GET_COMMENTS_BY_TICKER]: (state, payload) => {
     // [[{},ticker],[{},ticker]]
-    const companyBlock = [payload['comment'], payload['ticker']]
-    state.comments.push(companyBlock)
+    state.comments = payload
   },
   [types.MUTATE_BUY_TICKER]: (state, payload) => {
-    state.userDeals.push(payload)
-        console.log(payload);
-        console.log(state.userDeals);
+    if(payload[3] === 'change' && payload[2] === 'favorite') {
+      console.log('favorite');
+      const tickerIndex = state.favoriteStocksTickers.findIndex(ticker => ticker === payload[1])
+      const company = state.favoriteStocksTickers[tickerIndex]
+
+      state.favoriteStocksTickers = [...state.favoriteStocksTickers.slice(0, tickerIndex),
+      ...state.favoriteStocksTickers.slice(tickerIndex)]
+
+      state.favoriteStocks = [...state.favoriteStocks.slice(0, tickerIndex),
+      ...state.favoriteStocks.slice(tickerIndex)]
+
+      state.portfolioTickers.push(payload[1])
+      state.portfolio.push(company)
+      state.userDeals.push(payload[0]);
+    } else if (payload[3] === 'stable' && payload[2] === 'portfolio') {
+      const tickerIndex = state.portfolioTickers.findIndex(ticker => ticker === payload[1])
+      state.userDeals[tickerIndex] = payload[0]
+    }
+
   },
 }

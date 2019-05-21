@@ -1,0 +1,27 @@
+"news":[
+  {
+    "datetime":"2019-05-10T18:45:47-04:00",
+    "headline":"Facebook sues South Korean analytics firm over practices",
+    "source":"SeekingAlpha",
+    "url":"https://api.iextrading.com/1.0/stock/fb/article/9004292997725032",
+    "summary":"     Facebook (NASDAQ: FB ) has  filed suit against Rankwave , a South Korean data analytics company.   More news on: Facebook, Inc., Tech stocks news,     Read more …     ",
+    "related":"FB,INT31168144,NASDAQ01,ONL31168,Computing and Information Technology",
+    "image":"https://api.iextrading.com/1.0/stock/fb/news-image/9004292997725032"
+    },
+  ],
+
+"chart":[{
+  "date":"2019-04-09",
+  "open":175.62,
+  "high":179.19,
+  "low":175.55,
+  "close":177.58,
+  "volume":19751031,
+  "unadjustedVolume":19751031,
+  "change":2.65,
+  "changePercent":1.515,
+  "vwap":177.883,
+  "label":"Apr 9",
+  "changeOverTime":0
+}
+  ]}}

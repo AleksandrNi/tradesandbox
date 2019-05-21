@@ -9,8 +9,10 @@
   "openTime":1556631000864,
   "close":204.61,
   "closeTime":1556568000400,
-  "high":203.4,"low":199.11,
+  "high":203.4,
+  "low":199.11,
   "latestPrice":201.2,
+  ===========================
   "latestSource":"IEX real time price",
   "latestTime":"2:42:17 PM",
   "latestUpdate":1556649737348,
@@ -24,9 +26,11 @@
   "extendedChange":0,
   "extendedChangePercent":0,
   "extendedPriceTime":1556649737348,
+  ===========================
   "previousClose":204.61,
   "change":-3.41,
   "changePercent":-0.01667,
+  ===========================
   "iexMarketPercent":0.02735,
   "iexVolume":758806,
   "avgTotalVolume":26975445,
@@ -36,7 +40,9 @@
   "iexAskSize":100,
   "marketCap":948714336000,
   "peRatio":16.55,
+  ===========================
   "week52High":233.47,
   "week52Low":142,
+  ===========================
   "ytdChange":0.28454370722850586
 }}}

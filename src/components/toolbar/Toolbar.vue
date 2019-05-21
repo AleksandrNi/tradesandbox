@@ -126,6 +126,9 @@ export default {
   },
   components: {
     // appNavdrawer: () => import('./NavDrawer')
+  },
+  created () {
+    this.$store.dispatch(types.ACTION_GET_FAVORITE_COMPANIES)
   }
 }
 </script>

@@ -35,7 +35,7 @@
         <v-flex >
 
             <v-data-table
-              class="white--text mytable"
+              class="white--text mytable pa-1"
               hide-actions
               search
               :headers="headers"
@@ -58,13 +58,10 @@
 
 <script>
 import * as types from '../../store/types'
-import {mapActions, mapGetters} from 'vuex'
+import {mapActions} from 'vuex'
 
 // import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 export default {
-  props: {
-    ticker: String
-  },
   data () {
     return {
       comment: '',
@@ -83,31 +80,33 @@ export default {
   },
   methods: {
     ...mapActions({
-      sendMessageAction: types.ACTION_COMMENT_SEND_COMMENT
+      sendCommentAction: types.ACTION_COMMENT_SEND_COMMENT
     }),
-    ...mapGetters({
-      getCommentsByTicker_ID: types.GET_COMMENTS_BY_TICKER_ID
-    }),
-
-    sendMessage() {
-
-      let currentDate = new Date()
-      currentDate = currentDate.toLocaleString()
-
-      this.sendMessageAction({
-        comment: {
-          date: currentDate,
-          comment: this.comment
-        },
+    async sendMessage() {
+      this.sendCommentAction({
+        comment: this.comment,
         ticker: this.ticker,
       });
       this.comment = '';
-      this.getCommentsByTicker_ID()
+      // refresh data
+      this.comments = await this.getComments()
       return true
     },
+    async getComments() {
+      if(this.ticker) {
+        await this.$store.dispatch(types.ACTION_COMMENTS_GET_COMMENTS_BY_TICKER, this.ticker);
+        return this.$store.getters[types.GET_COMMENTS_GET_COMMENTS_BY_TICKER](this.ticker)
+      }
+    },
   },
-  created () {
-    this.comments = this.getCommentsByTicker_ID()
+  computed: {
+      ticker () {
+        return  this.$route.params.ticker ? this.$route.params.ticker.toLowerCase() : ''
+      },
+    },
+  async created () {
+    this.comments = await this.getComments()
+
   }
 
 }
@@ -120,5 +119,12 @@ export default {
 .v-messages {
   margin:0px;
   padding:0px;
+}
+.text-xs-left {
+  margin-left: 0px;
+  font-size: .9rem;
+}
+tr td {
+  margin-left: 0px;
 }
 </style>
