@@ -1,5 +1,5 @@
 Pocket for traders.
-client part.
+client side.
 
 <!-- console.log("1) "+  new Date().toDateString());
 console.log("2) "+  new Date().toISOString());
