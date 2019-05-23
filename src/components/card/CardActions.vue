@@ -1,6 +1,6 @@
 <template lang="html">
   <v-card-text slot='cardActions' >
-
+    <!--top level buttons buy|sell -->
     <span v-if='getPageFromMethod(["portfolio", "favorite"])'>
 
       <span v-if='getPageFromMethod(["portfolio"])'>
@@ -17,7 +17,7 @@
             >{{ type }}</v-btn>
         </v-flex>
       </span>
-
+      <!-- popup sell -->
       <span  v-if="dropdownButton === 'sell'">
 
         <app-textfield
@@ -30,13 +30,14 @@
         ></app-textfield>
 
         <v-btn color="info" block
-        @click="sendQueryMethod('sell')"
+        @click="buyTickerMethod('sell')"
         >Sell</v-btn>
 
       </span>
 
     </span>
 
+    <!-- popup buy -->
     <span v-if='getPageFromMethod(["portfolio"]) && dropdownButton === "buy" || getPageFromMethod(["favorite"]) && dropdownButton === "buy" '>
       <app-textfield
         :textFieldParams='textFieldParamsQtty'
@@ -47,7 +48,7 @@
         @update:input='textFieldParamsPrice.inputValue = $event'
       ></app-textfield>
       <v-btn color="success" block
-      @click.stop="sendQueryMethod('buy')"
+      @click.stop="buyTickerMethod('buy')"
       dark
       >Buy</v-btn>
     </span>
@@ -125,11 +126,9 @@ export default {
   },
   methods: {
     ...mapActions({
-      sendQuery: types.ACTION_SEND_QUERY,
       addTickerToFavorite: types.ACTION_ADD_TICKER_TO_FAVORITE,
-      removeCompanyFromStocks: types.ACTION_REMOVE_COMPANY_FROM_STOCKS,
-      removeCompanyFromFavorite: types.ACTION_REMOVE_COMPANY_FROM_FAVORITE,
       removeCompanyFromDB: types.ACTION_REMOVE_COMPANY_FROM_DB,
+      tickerDealsAction: types.ACTION_TICKER_DEALS,
     }),
     getPageFromMethod (params) {
       const storePageFrom = this.pageFrom
@@ -160,19 +159,28 @@ export default {
       }
       return false;
     },
-
-    buyButton () {
-      this.dropdownButton = 'buy';
-    },
-    sellButton () {
-      this.dropdownButton = 'sell';
-    },
     buttonAction(type) {
       if(type === 'buy') {
-        return this.buyButton()
+        this.dropdownButton = 'buy';
+        return true
+
       } else if (type === 'sell') {
-        return this.sellButton()
+        this.dropdownButton = 'sell';
+        return true
       }
+    },
+    // send action method
+    buyTickerMethod (type) {
+      const ticker = this.company[1]
+      if(this.textFieldParamsQtty.inputValue && this.textFieldParamsPrice.inputValue) {
+        this.tickerDealsAction({
+          type: type,
+          ticker: ticker,
+          qtty: this.textFieldParamsQtty.inputValue,
+          price: this.textFieldParamsPrice.inputValue,
+        })
+      }
+      return true
     },
     async iconAction(type, pageFrom) {
 

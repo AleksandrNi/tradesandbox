@@ -2,7 +2,7 @@
   <v-container>
     <v-layout row wrap >
 
-      <app-bargaincard/>
+      <app-portfoliotable/>
 
     </v-layout>
 
@@ -15,11 +15,11 @@ import {pathMethod} from '../../methods/PathMethod'
 export default {
   data () {
     return {
-      ticker: 'fb'
+      
     }
   },
   components: {
-        appBargaincard: () => import('../card/BargainCard'),
+        appPortfoliotable: () => import('../card/PortfolioTable'),
   },
   methods:{
     pathMethod

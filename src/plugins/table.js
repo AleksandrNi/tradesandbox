@@ -1,10 +1,8 @@
 import Vue from 'vue'
-import { DataTable } from 'v-datatable-light'
-
+import DataTable from 'v-data-table'
 Vue.use(DataTable)
 
-// https://vuejsexamples.com/a-lightweight-vue-datatable-component-with-no-dependencies/
-// <DataTable
-//   :header-fields="headerFields"
-//   :data="data"
-// />
+// <div id="demo">
+//   <data-table :data="gridData">
+//   </data-table>
+// </div>

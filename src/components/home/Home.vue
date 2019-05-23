@@ -1,18 +1,34 @@
 <template lang="html">
   <v-container>
     <v-layout row wrap justify-center>
-      <v-flex xs12 sm5 class='text-xs-center text-sm-right mx-2'>
-        <v-btn large block
-          @click='pathMethod({pageTo:"portfolio"})'
-          class='info'
-        >Portfolio</v-btn>
+      <app-portfoliotable class='hidden-sm-and-down' />
+
+      <v-flex xs12 sm5 class='hidden-md-and-up text-xs-center text-sm-right mx-2'>
+      <v-btn large block
+        @click='pathMethod({pageTo:"portfolio"})'
+        class='info'
+      >Portfolio</v-btn>
       </v-flex>
-      <v-flex xs12 sm5 class='text-xs-center text-sm-left mx-2'>
+      <v-flex xs12 sm5 class='hidden-md-and-up text-xs-center text-sm-left mx-2'>
+        <v-btn large block
+          @click='pathMethod({pageTo:"favorite"})'
+          class='info'
+        >Favorute</v-btn>
+      </v-flex>
+      <v-flex xs12 sm5 class='hidden-md-and-up text-xs-center text-sm-right mx-2'>
         <v-btn large block
           @click='pathMethod({pageTo:"stocks"})'
           class='info'
-          >Stocks</v-btn>
+        >Stocks</v-btn>
       </v-flex>
+      <v-flex xs12 sm5 class='hidden-md-and-up text-xs-center text-sm-left mx-2'>
+        <v-btn large block
+          @click='pathMethod({pageTo:"profile"})'
+          class='info'
+          >Profile</v-btn>
+        </v-flex>
+      </v-flex>
+
     </v-layout>
   </v-container>
     <!-- <v-flex xs12  grid-list-md text-xs-left>
@@ -56,6 +72,9 @@ export default {
     return {
       ToolbarButtons: ['Portfolio', 'Stocks'],
     }
+  },
+  components: {
+    appPortfoliotable: () => import('../card/PortfolioTable'),
   },
   methods: {
     pathMethod

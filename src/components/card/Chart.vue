@@ -91,4 +91,7 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.mytable table td {
+  background-color: #F5F5F5;
+}
 </style>

@@ -2,7 +2,7 @@
 
             <v-layout row wrap >
               <v-flex
-                v-for="company in companies"
+                v-for="(company, index) in companies"
                 :key='company[1]'
                 class='py-2 px-1'
                 xs12 sm6 md4
@@ -21,7 +21,7 @@
                     >
                     <v-layout fill-height>
                       <v-flex xs12 align-end flexbox>
-                        <span class="headline white--text" v-text="company[0][company[1]].quote.companyName"></span>
+                        <span class="headline white--text" v-text="company[0][company[1]].companyName"></span>
                       </v-flex>
                         <span>
                           <v-icon
@@ -48,13 +48,13 @@
                     <v-card-actions v-if='sourcePageMethod(["portfolio"])'>
                         <v-flex>
                           <div>mkt. value</div>
-                          <div>position | average price</div>
+                          <div>average price</div>
                           <div>margin</div>
                         </v-flex>
                         <v-flex class="text-xs-right">
-                          <div>{{ company[0][company[1]].quote.latestPrice }} $</div>
-                          <div>{{ company[0][company[1]].quote.boughtPrice }} $</div>
-                          <div>{{ company[0][company[1]].quote.margin }} %</div>
+                          <div>{{ userDeals[index].latestPrice }} $</div>
+                          <div>{{ userDeals[index].averagePrice }} $</div>
+                          <div>{{ userDeals[index].margin }} %</div>
                         </v-flex>
                     </v-card-actions>
 
@@ -90,7 +90,7 @@ export default {
   props: ['card', 'companies', 'hover'],
   data () {
     return {
-
+      userDeals: [],
     }
   },
   components: {
@@ -109,6 +109,14 @@ export default {
   computed: {
     pageFrom () {
       return this.$store.getters[types.GET_PAGE_FROM]
+    }
+  },
+  created () {
+
+    if(this.pageFrom && this.pageFrom === 'portfolio'){
+      const userDeals = this.$store.getters[types.GET_PORTFOLIO_USER_DEALS]
+      this.userDeals = userDeals
+
     }
   }
 }

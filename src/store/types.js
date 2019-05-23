@@ -10,6 +10,10 @@ export const GET_ACTIVE_TICKER = 'common/GET_ACTIVE_TICKER'
 export const GET_FUNDS = 'common/GET_FUNDS'
             // Portfolio
 export const GET_PORTFOLIO = 'common/GET_PORTFOLIO'
+            // Portfolio userDeals
+export const GET_PORTFOLIO_USER_DEALS = 'common/GET_PORTFOLIO_USER_DEALS'
+            // PortfolioTickers
+export const GET_PORTFOLIO_TICKERS = 'common/GET_PORTFOLIO_TICKERS'
             // Favorite
 export const GET_FAVORITE_STOCKS = 'common/GET_FAVORITE_STOCKS'
             // Favorite Tickers
@@ -49,7 +53,7 @@ export const ACTION_REMOVE_COMPANY_FROM_FAVORITE = 'remove/ACTION_REMOVE_COMPANY
 export const ACTION_COMMENT_SEND_COMMENT = 'comments/ACTION_COMMENT_SEND_COMMENT'
 export const ACTION_COMMENTS_GET_COMMENTS_BY_TICKER = 'comments/ACTION_COMMENTS_GET_COMMENTS_BY_TICKER'
             // BargainCard
-export const ACTION_BUY_TICKER = 'bargain/ACTION_BUY_TICKER'
+export const ACTION_TICKER_DEALS = 'bargain/ACTION_TICKER_DEALS'
 
 
 //Mutations

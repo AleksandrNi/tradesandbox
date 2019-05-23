@@ -122,10 +122,8 @@ export class GetDataServise {
       return response
   }
 
-  static async buyTicker (payload) {
-
+  static async tickerDeals (payload) {
     const compiledUrl = path.join(process.cwd(),`${url7}/${payload.ticker}`)
-
     const response = await fetch(compiledUrl,
     {
       method: 'POST',

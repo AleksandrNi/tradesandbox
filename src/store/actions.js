@@ -63,9 +63,9 @@ export default {
   },
 
   // BUY TICKER
-  [types.ACTION_BUY_TICKER]: async (context, payload) => {
+  [types.ACTION_TICKER_DEALS]: async (context, payload) => {
     console.log(payload);
-    const boughtTicker = await GetDataServise.buyTicker(payload)
+    const boughtTicker = await GetDataServise.tickerDeals(payload)
     context.commit(types.MUTATE_BUY_TICKER, boughtTicker)
   },
 

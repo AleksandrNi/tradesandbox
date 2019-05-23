@@ -66,7 +66,6 @@ export default {
     return {
       comment: '',
       comments: [[{date:'', comment: ''}]],
-      companyComments: [['title', 'comment'],['title1', 'comment1']],
       headers: [
         { text: 'Date', value: 'date', align: 'left', sortable: false, },
         { text: 'Comment', value: 'comment', sortable: false, },

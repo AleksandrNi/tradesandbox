@@ -1,5 +1,5 @@
 import * as types from './types'
-
+import {pathMethod} from '../methods/PathMethod'
 export default {
 
   // destPage
@@ -83,23 +83,52 @@ export default {
     state.comments = payload
   },
   [types.MUTATE_BUY_TICKER]: (state, payload) => {
-    if(payload[3] === 'change' && payload[2] === 'favorite') {
-      console.log('favorite');
+
+    // user trying sell more papers than he has
+    if (!payload) {
+      alert('You cant sell more papers than you have')
+      console.log(payload);
+      return
+      // favorite => portfolio
+    } else if (Array.isArray(payload) && payload[3] === 'change' && payload[2] === 'favorite') {
+      console.log(payload);
       const tickerIndex = state.favoriteStocksTickers.findIndex(ticker => ticker === payload[1])
-      const company = state.favoriteStocksTickers[tickerIndex]
-
-      state.favoriteStocksTickers = [...state.favoriteStocksTickers.slice(0, tickerIndex),
-      ...state.favoriteStocksTickers.slice(tickerIndex)]
-
-      state.favoriteStocks = [...state.favoriteStocks.slice(0, tickerIndex),
-      ...state.favoriteStocks.slice(tickerIndex)]
-
+      const company = state.favoriteStocks[tickerIndex]
+      // add company to portfolio
       state.portfolioTickers.push(payload[1])
       state.portfolio.push(company)
       state.userDeals.push(payload[0]);
-    } else if (payload[3] === 'stable' && payload[2] === 'portfolio') {
+
+      // remove company to favorite
+      state.favoriteStocksTickers = [...state.favoriteStocksTickers.slice(0, tickerIndex),
+      ...state.favoriteStocksTickers.slice(tickerIndex + 1)]
+
+      state.favoriteStocks = [...state.favoriteStocks.slice(0, tickerIndex),
+      ...state.favoriteStocks.slice(tickerIndex + 1)]
+
+      // buy | sell ticker in portfolio, qtty > 0
+    } else if (Array.isArray(payload) && payload[3] === 'stable' && payload[2] === 'portfolio') {
       const tickerIndex = state.portfolioTickers.findIndex(ticker => ticker === payload[1])
       state.userDeals[tickerIndex] = payload[0]
+
+      // user ve bought paper first time
+    } else if (Array.isArray(payload) && payload[3] === 'change' && payload[2] === 'portfolio') {
+      console.log(payload);
+      const tickerIndex = state.portfolioTickers.findIndex(ticker => ticker === payload[1])
+      const company = state.portfolio[tickerIndex]
+      // add company to portfolio
+      state.favoriteStocksTickers.push(payload[1])
+      state.favoriteStocks.push(company)
+
+      // remove company to favorite
+      state.portfolioTickers = [...state.portfolioTickers.slice(0, tickerIndex),
+      ...state.portfolioTickers.slice(tickerIndex + 1)]
+
+      state.portfolio = [...state.portfolio.slice(0, tickerIndex),
+      ...state.portfolio.slice(tickerIndex + 1)]
+
+      state.userDeals = [...state.userDeals.slice(0, tickerIndex),
+      ...state.userDeals.slice(tickerIndex + 1)]
     }
 
   },

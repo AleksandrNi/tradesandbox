@@ -16,8 +16,15 @@ export default {
   [types.GET_FUNDS]: state => {
     return state.funds
   },
+  // Portfolio
+  [types.GET_PORTFOLIO_TICKERS]: state => {
+    return state.portfolioTickers
+  },
   [types.GET_PORTFOLIO]: state => {
     return state.portfolio
+  },
+  [types.GET_PORTFOLIO_USER_DEALS]: state => {
+    return state.userDeals
   },
 
   //Favorite

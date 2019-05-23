@@ -26,9 +26,9 @@
               </v-btn>
             </span>
           </v-flex>
-
+          <!-- code for favorite and portfolio -->
           <!-- chart | quote -->
-          <v-flex xs12 md8 class='px-1 text-xs-left'>
+          <v-flex v-if='getPageFromMethod(["favorite", "portfolio"])' xs12 md7 class='px-1 text-xs-left'>
             <app-chart
             :chartData='chartData'
             :companyTable='companyTable'
@@ -36,21 +36,48 @@
          </v-flex>
 
          <!-- comments -->
-         <v-flex v-if='getPageFromMethod(["favorite", "portfolio"])' xs12 md4 class='px-1 text-xs-left'>
+         <v-flex v-if='getPageFromMethod(["favorite", "portfolio"])' xs12 md5 class='px-1 text-xs-left'>
            <app-comments :key='ticker' />
          </v-flex>
 
-        <!-- bargain card -->
-        <!-- v-if='getPageFromMethod(["favorite", "portfolio"])' -->
-         <v-flex v-if='getPageFromMethod(["favorite", "portfolio"])' xs12 class='my-1 px-1 text-xs-left'>
-           <div >
-             <h5>Bargain</h5>
-           </div>
-
-           <app-bargaincard
-            :company='company'
-           />
+          <!-- code for stocks -->
+          <!-- chart only -->
+          <v-flex v-if='getPageFromMethod(["stocks"])' xs12 class='px-1 text-xs-left'>
+            <app-chart
+            :chartData='chartData'
+            :companyTable='companyTable'
+            />
          </v-flex>
+
+          <!-- TickerStats -->
+          <v-flex v-if='getPageFromMethod(["portfolio"])' xs12 md7 class=' px-1 text-xs-left '>
+            <app-tickerstats
+            :key='ticker'
+            :ticker='ticker'
+            />
+          </v-flex>
+
+
+          <!-- bargain card -->
+          <v-flex v-if='getPageFromMethod(["favorite"])' xs12 class='text-xs-left'>
+            <div >
+              <h5>Bargain</h5>
+            </div>
+
+            <app-bargaincard
+            :company='company'
+            />
+          </v-flex>
+
+          <v-flex v-if='getPageFromMethod(["portfolio"])' xs12 md5 class=' px-1 text-xs-left'>
+            <div >
+              <h5>Bargain</h5>
+            </div>
+
+            <app-bargaincard
+            :company='company'
+            />
+          </v-flex>
 
         <!-- news -->
         <v-flex xs12 class='mt-3 px-1 text-xs-left'>
@@ -94,32 +121,13 @@ export default {
     appComments: () => import('../card/Comments'),
     appBargaincard: () => import('../card/BargainCard'),
     appChart: () => import('../card/Chart'),
+    appTickerstats: () => import('../card/TickerStats'),
   },
   methods: {
     getPageFromMethod (params) {
       for (let arg of params) {
         if(arg === this.pageFrom) return arg
       }
-    },
-    iconAction(type, activePage) {
-      if(activePage === 'stocks') {
-        if (type === 'bookmark_border') {
-          this.propsParams.stocks.icons[0] = 'bookmark'
-          return this.$store.dispatch(types.ACTION_ADD_TICKER_TO_FAVORITE, this.company)
-        } else if(type === 'bookmark') {
-          this.propsParams.stocks.icons[0] = 'bookmark_border'
-          return this.$store.dispatch(types.ACTION_REMOVE_COMPANY_FROM_STOCKS, this.company)
-        }
-
-      } else if (activePage === 'stocks' && type === 'delete_outline') {
-        this.propsParams.stocks.icons[1] = 'delete'
-        return this.$store.dispatch(types.ACTION_REMOVE_COMPANY_FROM_STOCKS, this.company[1])
-
-      } else if(activePage === 'favorite' && type === 'delete_outline') {
-        this.propsParams.portfolio.icons[0] = 'delete'
-        return this.$store.dispatch(types.ACTION_REMOVE_COMPANY_FROM_FAVORITE, this.company[1])
-      }
-      return false
     },
 
     pathMethod,
@@ -154,16 +162,37 @@ export default {
 
     // type [chart, qoute, news]
     if(!this.pageFrom) {
-      this.pathMethod({pageFrom:"stocks"})
+      // this.pathMethod({pageFrom:"stocks"})
       //load data from db
       await this.$store.dispatch(types.ACTION_SEND_QUERY, this.ticker)
+
+      let checked = false
+      const portfolioTickers  = this.$store.getters[types.GET_PORTFOLIO_TICKERS]
+      if (portfolioTickers.length) {
+        const tickerExists = portfolioTickers.some(ticker => ticker === this.ticker)
+        if (tickerExists) {
+          checked = true
+          this.pathMethod({pageFrom:"portfolio"})
+        }
+      }
+      if(!checked) {
+        const favoriteStocksTickers = this.$store.getters[types.GET_FAVORITE_TICKERS_STOCKS]
+        if(favoriteStocksTickers.length) {
+          const tickerExists = favoriteStocksTickers.some(ticker => ticker === this.ticker)
+          if(tickerExists) {
+            checked = true
+            this.pathMethod({pageFrom:"favorite"})
+          }
+        }
+      }
+      if(!checked) {
+        this.pathMethod({pageFrom:"stocks"})
+      }
     }
   },
 }
 </script>
 
 <style lang="css" scoped>
-.mytable table td {
-  background-color: #F5F5F5;
-}
+
 </style>

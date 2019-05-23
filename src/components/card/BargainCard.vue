@@ -64,11 +64,17 @@
                     <v-btn xs6 block
                     class='primary'
                     v-if='getPageFromMethod([ "portfolio","favorite"])'
-                    @click.stop='buyTickerMethod()'
+                    @click.stop='tickerDealsMethod("buy")'
                     >Buy</v-btn>
                   </v-flex>
                   <v-flex xs12 md6 text-xs-left class='px-2'>
-                    <v-btn xs6 block class='primary' v-if='getPageFromMethod(["portfolio"])'>Sell</v-btn>
+                    <v-btn
+                    class='primary'
+                    xs6
+                    block
+                    @click.stop='tickerDealsMethod("sell")'
+                    v-if='getPageFromMethod(["portfolio"])'
+                    >Sell</v-btn>
                     <v-btn xs6 block class='primary' disabled v-if='getPageFromMethod(["favorite"])'>Sell</v-btn>
                   </v-flex>
 
@@ -211,11 +217,11 @@ export default {
     },
 
     ...mapActions({
-      buyTickerAction: types.ACTION_BUY_TICKER
+      tickerDealsAction: types.ACTION_TICKER_DEALS
     }),
 
     // send action method
-    buyTickerMethod () {
+    tickerDealsMethod (type) {
       const ticker = this.company[0][1]
       let check = false
       if(this.textFieldParamsQtty.inputValue && this.textFieldParamsPrice.inputValue) {
@@ -223,8 +229,8 @@ export default {
       }
 
       if(check) {
-        this.buyTickerAction({
-          type: 'buy',
+        this.tickerDealsAction({
+          type: type,
           ticker: ticker,
           qtty: this.textFieldParamsQtty.inputValue,
           price: this.textFieldParamsPrice.inputValue,
