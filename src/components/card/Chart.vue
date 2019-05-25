@@ -47,7 +47,7 @@
 
 <script>
 export default {
-  props: ['chartData', 'companyTable'],
+  props: ['chartData'],
   data () {
     return {
       chartOptions: {
@@ -86,7 +86,13 @@ export default {
         { text: 'Price, $', value: 'price', sortable: false, },
       ],
     }
-  }
+  },
+  computed: {
+    companyTable () {
+      const cleanData = this.chartData.slice(1)
+      return cleanData.reverse()
+    }
+  },
 }
 </script>
 

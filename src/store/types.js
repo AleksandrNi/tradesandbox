@@ -24,6 +24,8 @@ export const GET_QUERY_STOCKS = 'common/GET_QUERY_STOCKS'
 export const GET_COMPANY_PARAM_BY_TICKER_ID = 'companyPage/GET_COMPANY_PARAM_BY_TICKER_ID'
             // Comments
 export const GET_COMMENTS_GET_COMMENTS_BY_TICKER = 'comments/GET_COMMENTS_GET_COMMENTS_BY_TICKER'
+            // GET_SHOW_HIDE_CHART on the main page
+export const GET_SHOW_HIDE_CHART = 'home/GET_SHOW_HIDE_CHART'
 
 
 //Actions
@@ -54,6 +56,8 @@ export const ACTION_COMMENT_SEND_COMMENT = 'comments/ACTION_COMMENT_SEND_COMMENT
 export const ACTION_COMMENTS_GET_COMMENTS_BY_TICKER = 'comments/ACTION_COMMENTS_GET_COMMENTS_BY_TICKER'
             // BargainCard
 export const ACTION_TICKER_DEALS = 'bargain/ACTION_TICKER_DEALS'
+            // ACTION_SHOW_HIDE_CHART on the main page
+export const ACTION_SHOW_HIDE_CHART = 'home/ACTION_SHOW_HIDE_CHART'
 
 
 //Mutations
@@ -84,3 +88,5 @@ export const MUTATE_COMMENTS_GET_COMMENTS_BY_TICKER = 'comments/MUTATE_COMMENTS_
 
             // BargainCard
 export const MUTATE_BUY_TICKER = 'bargain/MUTATE_BUY_TICKER'
+            // MUTATE_SHOW_HIDE_CHART on the main page
+export const MUTATE_SHOW_HIDE_CHART = 'home/MUTATE_SHOW_HIDE_CHART'

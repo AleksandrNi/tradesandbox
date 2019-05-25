@@ -31,7 +31,6 @@
           <v-flex v-if='getPageFromMethod(["favorite", "portfolio"])' xs12 md7 class='px-1 text-xs-left'>
             <app-chart
             :chartData='chartData'
-            :companyTable='companyTable'
             />
          </v-flex>
 
@@ -45,7 +44,6 @@
           <v-flex v-if='getPageFromMethod(["stocks"])' xs12 class='px-1 text-xs-left'>
             <app-chart
             :chartData='chartData'
-            :companyTable='companyTable'
             />
          </v-flex>
 
@@ -151,7 +149,6 @@ export default {
       })()
     },
     companyNews () {return this.company && this.company[0] ? this.company[0][0][this.ticker]['news'] : []},
-    companyTable () {return this.company && this.company[0] ? this.company[0][0][this.ticker]['mixed']['table'] : []},
     chartData () {return this.company && this.company[0] ? this.company[0][0][this.ticker]['mixed']['chart'] : []}
 
 

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import './plugins/vuetify'
 import './plugins/chart'
+// import './plugins/chartjs'
 import './plugins/editor'
 import './plugins/table'
 import App from './App.vue'

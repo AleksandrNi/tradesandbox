@@ -27,6 +27,12 @@ export default {
     return state.userDeals
   },
 
+  // HOME
+  // GET_SHOW_HIDE_CHART
+  [types.GET_SHOW_HIDE_CHART]: state => {
+    return state.chartShowTickers
+  },
+
   //Favorite
   [types.GET_FAVORITE_STOCKS]: state => {
     return state.favoriteStocks

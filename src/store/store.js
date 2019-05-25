@@ -35,6 +35,7 @@ export const store = new Vuex.Store({
     pageTo: '',
     pageFrom: '',
     activeTicker: '',
+    chartShowTickers: [],
 
   },
   getters,

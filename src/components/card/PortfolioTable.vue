@@ -1,7 +1,7 @@
 <template lang="html">
   <v-flex class='text-xs-left' >
     <div>
-      <h5>Current</h5>
+      <h5>Current favorite tickers</h5>
     </div>
     <v-data-table
       hide-actions
@@ -23,9 +23,18 @@
           <v-icon
             small
             class="mr-2"
-            @click="openTicker(props.item.ticker)"
+            @click="showHideGraph(props.item.ticker)"
           >
             equalizer
+          </v-icon>
+        </td>
+        <td class="justify-center layout px-0">
+          <v-icon
+            small
+            class="mr-2"
+            @click="openTicker(props.item.ticker)"
+          >
+            expand
           </v-icon>
         </td>
       </template>
@@ -132,6 +141,9 @@ export default {
      openTicker (ticker) {
       this.pathMethod({pageFrom:"portfolio"})
       this.$router.push({name:'companyPage', params: { ticker: ticker } })
+     },
+     showHideGraph (ticker) {
+        this.$store.dispatch(types.ACTION_SHOW_HIDE_CHART, ticker)
      },
    }
  }

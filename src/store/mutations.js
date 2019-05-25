@@ -22,6 +22,20 @@ export default {
     const indexExists = state.queryStock.findIndex((company, index) => company[1] === payload[1])
     indexExists !== -1 ? state.queryStock[indexExists] =  payload : state.queryStock.push(payload)
   },
+  // HOME
+  // MUTATE_SHOW_HIDE_CHART on the main page
+  [types.MUTATE_SHOW_HIDE_CHART]: (state, payload) => {
+    // payload = ticker
+    const indexExists = state.chartShowTickers.findIndex(ticker => ticker === payload)
+    indexExists !== -1
+    ? state.chartShowTickers = [
+      ...state.chartShowTickers.slice(0, indexExists),
+      ...state.chartShowTickers.slice(indexExists + 1)
+    ]
+    : state.chartShowTickers.push(payload)
+    console.log(state.chartShowTickers);
+  },
+
 
   // Favorite
   // GET FAVORITE COMPANIES

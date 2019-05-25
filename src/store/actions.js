@@ -17,6 +17,13 @@ export default {
   [types.ACTION_FUNDS]: (context, payload) => {
     context.commit(types.MUTATE_FUNDS, payload)
   },
+  
+  // HOME
+  // ACTION_SHOW_HIDE_CHART on the main page
+  [types.ACTION_SHOW_HIDE_CHART]: async (context, payload) => {
+    context.commit(types.MUTATE_SHOW_HIDE_CHART, payload)
+  },
+
   [types.ACTION_SEND_QUERY]: async (context, payload) => {
     // payload : 'fb'
     const company = await GetDataServise.getCompany(payload)
@@ -68,5 +75,6 @@ export default {
     const boughtTicker = await GetDataServise.tickerDeals(payload)
     context.commit(types.MUTATE_BUY_TICKER, boughtTicker)
   },
+
 
 }

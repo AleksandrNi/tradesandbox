@@ -1,8 +1,12 @@
 <template lang="html">
   <v-container>
     <v-layout row wrap justify-center>
-      <app-portfoliotable class='hidden-sm-and-down' />
+        <app-chartjs
+        v-if='portfolioTickers'
+        :key="tickers.length"
+        />
 
+      <app-portfoliotable class='hidden-sm-and-down' />
       <v-flex xs12 sm5 class='hidden-md-and-up text-xs-center text-sm-right mx-2'>
       <v-btn large block
         @click='pathMethod({pageTo:"portfolio"})'
@@ -31,33 +35,6 @@
 
     </v-layout>
   </v-container>
-    <!-- <v-flex xs12  grid-list-md text-xs-left>
-     <v-card>
-       <v-img
-         src="https://cdn.vuetifyjs.com/images/cards/desert.jpg"
-         aspect-ratio="10"
-       ></v-img>
-
-       <v-card-title primary-title>
-         <div>
-           <h3 class="headline mb-0">Kangaroo Valley Safari</h3>
-           <div>Trade of view portfolio</div>
-           <p>You may save & load Data.</p>
-           <p>You Funds: {{ getFunds }}</p>
-         </div>
-       </v-card-title>
-      <v-card-text>
-        <p>This is your thrade place</p>
-      </v-card-text>
-       <v-card-actions>
-         <v-btn flat color="orange">Share</v-btn>
-         <v-btn flat color="orange">Explore</v-btn>
-       </v-card-actions>
-     </v-card>
-   </v-flex> -->
-
-
-
 
 </template>
 
@@ -70,19 +47,28 @@ import {pathMethod} from '../../methods/PathMethod'
 export default {
   data () {
     return {
-      ToolbarButtons: ['Portfolio', 'Stocks'],
+
+      // ToolbarButtons: ['Portfolio', 'Stocks'],
     }
   },
   components: {
+    appChartjs: () => import('../card/ChartJS'),
     appPortfoliotable: () => import('../card/PortfolioTable'),
   },
   methods: {
-    pathMethod
+    pathMethod,
   },
   computed: {
     ...mapGetters({
       getFunds: types.GET_FUNDS
-    })
+    }),
+    tickers () {
+      return this.$store.getters[types.GET_SHOW_HIDE_CHART]
+    },
+    portfolioTickers () {
+      return this.$store.getters[types.GET_PORTFOLIO_TICKERS]
+    }
+
   },
   created() {
     this.pathMethod({pageFrom:"home"})

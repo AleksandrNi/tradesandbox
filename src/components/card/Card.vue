@@ -90,7 +90,6 @@ export default {
   props: ['card', 'companies', 'hover'],
   data () {
     return {
-      userDeals: [],
     }
   },
   components: {
@@ -109,15 +108,16 @@ export default {
   computed: {
     pageFrom () {
       return this.$store.getters[types.GET_PAGE_FROM]
-    }
+    },
+    userDeals () {
+      let response = (this.pageFrom && this.pageFrom === 'portfolio')
+      ? this.$store.getters[types.GET_PORTFOLIO_USER_DEALS]
+      : []
+
+      return response
+    },
   },
   created () {
-
-    if(this.pageFrom && this.pageFrom === 'portfolio'){
-      const userDeals = this.$store.getters[types.GET_PORTFOLIO_USER_DEALS]
-      this.userDeals = userDeals
-
-    }
   }
 }
 </script>
