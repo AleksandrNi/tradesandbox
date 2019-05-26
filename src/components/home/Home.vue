@@ -1,12 +1,17 @@
 <template lang="html">
   <v-container>
     <v-layout row wrap justify-center>
-        <app-chartjs
-        v-if='portfolioTickers'
-        :key="tickers.length"
-        />
 
+      <!-- Chart -->
+      <app-chartjs
+      v-if='portfolioTickers'
+      :key="tickers.length"
+      />
+
+      <!-- Portfolio table -->
       <app-portfoliotable class='hidden-sm-and-down' />
+
+      <!-- Extra buttons for small screens -->
       <v-flex xs12 sm5 class='hidden-md-and-up text-xs-center text-sm-right mx-2'>
       <v-btn large block
         @click='pathMethod({pageTo:"portfolio"})'
@@ -17,7 +22,7 @@
         <v-btn large block
           @click='pathMethod({pageTo:"favorite"})'
           class='info'
-        >Favorute</v-btn>
+      >Favorute</v-btn>
       </v-flex>
       <v-flex xs12 sm5 class='hidden-md-and-up text-xs-center text-sm-right mx-2'>
         <v-btn large block
@@ -52,7 +57,7 @@ export default {
     }
   },
   components: {
-    appChartjs: () => import('../card/ChartJS'),
+    appChartjs: () => import('../card/ChartJSHome'),
     appPortfoliotable: () => import('../card/PortfolioTable'),
   },
   methods: {

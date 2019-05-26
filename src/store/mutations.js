@@ -33,7 +33,6 @@ export default {
       ...state.chartShowTickers.slice(indexExists + 1)
     ]
     : state.chartShowTickers.push(payload)
-    console.log(state.chartShowTickers);
   },
 
 

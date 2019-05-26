@@ -20,22 +20,34 @@
         <td class="text-xs-right">{{ props.item.margin }}</td>
         <td class="text-xs-right">{{ props.item.profit }}</td>
         <td class="justify-center layout px-0">
-          <v-icon
-            small
-            class="mr-2"
-            @click="showHideGraph(props.item.ticker)"
+          <v-btn
+          icon
+          :class="buttonClasses[props.item.ticker] ? buttonClasses[props.item.ticker] : ' mr-2'"
+          @click.stop="showHideGraph(props.item.ticker)"
           >
-            equalizer
-          </v-icon>
+            <v-icon
+              small
+              out-in
+            >
+              equalizer
+            </v-icon>
+          </v-btn>
         </td>
         <td class="justify-center layout px-0">
-          <v-icon
-            small
-            class="mr-2"
-            @click="openTicker(props.item.ticker)"
+          <v-btn
+          icon
+          class="mr-2"
+          @click.stop="openTicker(props.item.ticker)"
           >
-            expand
-          </v-icon>
+            <v-icon
+              small
+              out-in
+
+            >
+              expand
+            </v-icon>
+          </v-btn>
+
         </td>
       </template>
 
@@ -54,13 +66,34 @@
         <td class="text-xs-right">{{ props.item.latestPrice }}</td>
         <td class="text-xs-right">{{ props.item.margin }}</td>
         <td class="justify-center layout px-0">
-          <v-icon
-            small
-            class="mr-2"
-            @click="openTicker(props.item.ticker)"
+          <v-btn
+          icon
+          :class="buttonClasses[props.item.ticker] ? buttonClasses[props.item.ticker] : ' mr-2'"
+          @click.stop="showHideGraph(props.item.ticker)"
           >
-            equalizer
-          </v-icon>
+            <v-icon
+              small
+              out-in
+            >
+              equalizer
+            </v-icon>
+          </v-btn>
+        </td>
+        <td class="justify-center layout px-0">
+          <v-btn
+          icon
+          class="mr-2"
+          @click.stop="openTicker(props.item.ticker)"
+          >
+            <v-icon
+              small
+              out-in
+
+            >
+              expand
+            </v-icon>
+          </v-btn>
+
         </td>
       </template>
 
@@ -133,6 +166,16 @@ export default {
      this.tableDataSmallSize = sortedUserDealsArray
     // table for large screens
      this.tableData = sortedUserDealsArray
+   },
+   computed: {
+     tickers () {
+       return this.$store.getters[types.GET_SHOW_HIDE_CHART]
+     },
+     buttonClasses () {
+       const buttonClasses = {};
+       this.tickers.map(ticker => buttonClasses[ticker] = 'search')
+       return buttonClasses;
+     },
    },
 
    methods: {

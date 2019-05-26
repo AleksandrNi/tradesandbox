@@ -1,5 +1,5 @@
 <template lang="html">
-<v-layout>
+
   <v-flex class='px-3'>
 
     <v-layout row wrap >
@@ -19,7 +19,7 @@
     </v-layout>
 
   </v-flex>
-</v-layout>
+
 </template>
 
 <script>

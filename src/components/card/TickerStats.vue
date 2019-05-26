@@ -1,11 +1,11 @@
 <template lang="html">
-<v-flex class='text-xs-left ' >
+<v-flex  :key='key' class='text-xs-left ' >
   <div>
     <h5>Ticker Info</h5>
   </div>
     <v-data-table
       :headers="headers"
-      :items="tickerParams"
+      :items="getData"
       class="mytable"
       hide-actions
       hide-headers
@@ -30,6 +30,7 @@ export default {
   props: ['ticker'],
   data () {
     return {
+      key: 0,
       tickerParams: [[{name:'', pocket:'', current: ''}]],
       headers: [
          {text: 'Name', align: 'left', sortable: false, value: 'name' },
@@ -38,81 +39,92 @@ export default {
        ],
     }
   },
-  created () {
-    if(!this.ticker) return
-    const portfolioTickers = this.$store.getters[types.GET_PORTFOLIO]
-    const tickerIndex = portfolioTickers.findIndex(obj => obj[1] === this.ticker)
-    const userDealsArray = this.$store.getters[types.GET_PORTFOLIO_USER_DEALS]
-    // userDeals
-    const userDeals = userDealsArray[tickerIndex]
+  computed: {
+    getData() {
+      if(!this.ticker) return
+      const portfolioTickers = this.$store.getters[types.GET_PORTFOLIO]
+      const tickerIndex = portfolioTickers.findIndex(obj => obj[1] === this.ticker)
+      const userDealsArray = this.$store.getters[types.GET_PORTFOLIO_USER_DEALS]
+      console.log(userDealsArray);
+      // userDeals
+      const userDeals = userDealsArray[tickerIndex]
 
-    // company Data
-    const companies = this.$store.getters[types.GET_PORTFOLIO]
-    const companyChart = companies[tickerIndex]
-    // const currentPrice = companyChart[0] ? companyChart[0][companyChart[1]]['mixed']['table'][1][1] : ''
+      // company Data
+      const companies = this.$store.getters[types.GET_PORTFOLIO]
+      const companyChart = companies[tickerIndex]
+      // const currentPrice = companyChart[0] ? companyChart[0][companyChart[1]]['mixed']['table'][1][1] : ''
 
-    // [[{name:'', pocket:'', current: ''}]],
-    const objectKeys = Object.keys(userDeals)
-    // userDeals [{Ticker, qtty, averagePrice, priceTarget, priceTargetGrow, priceLow, priceLowGrow}]
-    const sortedArray = [[{name: "Name", pocket: 'Pocket values', current: 'Market values'}]]
-
-    objectKeys.map(key => {
-      const tempObject = {}
-      if(key === 'averagePrice') {
-        tempObject['name'] = 'Average price'
-        tempObject['pocket'] = userDeals[key]
-        tempObject['current'] = userDeals['latestPrice']
-
-      } else if (key === 'qtty') {
-        tempObject['name'] = 'Quantity'
-        tempObject['pocket'] = userDeals[key]
-        tempObject['current'] = ''
-
-      } else if (key === 'high') {
-        tempObject['name'] = 'High Daily Market Value'
-        tempObject['pocket'] = ''
-        tempObject['current'] = userDeals[key]
-
-      } else if (key === 'low') {
-        tempObject['name'] = 'Low Daily Market Value'
-        tempObject['pocket'] = ''
-        tempObject['current'] = userDeals[key]
-
-      } else if (key === 'margin') {
-        tempObject['name'] = 'Margin (current), %'
-        tempObject['pocket'] = userDeals[key]
-        tempObject['current'] = ''
-
-      } else if (key === 'latestPrice') {
-        tempObject['name'] = 'Latest Market Price, %'
-        tempObject['pocket'] = ''
-        tempObject['current'] = userDeals[key]
-
-      } else if (key === 'profit') {
-        tempObject['name'] = 'Profit (current), $'
-        tempObject['pocket'] = userDeals[key]
-        tempObject['current'] = ''
-
-      } else if (key === 'amount') {
-        tempObject['name'] = 'Amount, $'
-        tempObject['pocket'] = userDeals[key]
-        tempObject['current'] = ''
-
-      } else if (key === 'topPriceTarget') {
-        tempObject['name'] = 'Top limit, $'
-        tempObject['pocket'] = userDeals[key] || ''
-        tempObject['current'] = ''
-
-      } else if (key === 'lowPriceTarget') {
-        tempObject['name'] = 'Low limit, $'
-        tempObject['pocket'] = userDeals[key] || ''
-        tempObject['current'] = ''
+      // check if object
+      // if all papers sold out goes step back
+      if(typeof userDeals !== 'object') {
+        return []
       }
-      // tempObject['name'] = key
-      if(tempObject['pocket'] || tempObject['current']) sortedArray.push([tempObject])
-    })
 
-    this.tickerParams = sortedArray
+      // [[{name:'', pocket:'', current: ''}]],
+      const objectKeys = Object.keys(userDeals)
+      // userDeals [{Ticker, qtty, averagePrice, priceTarget, priceTargetGrow, priceLow, priceLowGrow}]
+      const sortedArray = [[{name: "Name", pocket: 'Pocket values', current: 'Market values'}]]
+
+      objectKeys.map(key => {
+        const tempObject = {}
+        if(key === 'averagePrice') {
+          tempObject['name'] = 'Average price'
+          tempObject['pocket'] = userDeals[key]
+          tempObject['current'] = userDeals['latestPrice']
+
+        } else if (key === 'qtty') {
+          tempObject['name'] = 'Quantity'
+          tempObject['pocket'] = userDeals[key]
+          tempObject['current'] = ''
+
+        } else if (key === 'high') {
+          tempObject['name'] = 'High Daily Market Value'
+          tempObject['pocket'] = ''
+          tempObject['current'] = userDeals[key]
+
+        } else if (key === 'low') {
+          tempObject['name'] = 'Low Daily Market Value'
+          tempObject['pocket'] = ''
+          tempObject['current'] = userDeals[key]
+
+        } else if (key === 'margin') {
+          tempObject['name'] = 'Margin (current), %'
+          tempObject['pocket'] = userDeals[key]
+          tempObject['current'] = ''
+
+        } else if (key === 'latestPrice') {
+          tempObject['name'] = 'Latest Market Price, %'
+          tempObject['pocket'] = ''
+          tempObject['current'] = userDeals[key]
+
+        } else if (key === 'profit') {
+          tempObject['name'] = 'Profit (current), $'
+          tempObject['pocket'] = userDeals[key]
+          tempObject['current'] = ''
+
+        } else if (key === 'amount') {
+          tempObject['name'] = 'Amount, $'
+          tempObject['pocket'] = userDeals[key]
+          tempObject['current'] = ''
+
+        } else if (key === 'topPriceTarget') {
+          tempObject['name'] = 'Top limit, $'
+          tempObject['pocket'] = userDeals[key] || ''
+          tempObject['current'] = ''
+
+        } else if (key === 'lowPriceTarget') {
+          tempObject['name'] = 'Low limit, $'
+          tempObject['pocket'] = userDeals[key] || ''
+          tempObject['current'] = ''
+        }
+        // tempObject['name'] = key
+        if(tempObject['pocket'] || tempObject['current']) sortedArray.push([tempObject])
+      })
+      this.key++
+      return sortedArray
+    }
+  },
+  created () {
 
   },
 

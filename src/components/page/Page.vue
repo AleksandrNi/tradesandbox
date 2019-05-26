@@ -4,10 +4,15 @@
       <v-flex>
 
 
+
+        <!-- <app-chartjs
+        v-if='getPageFromMethod(["favorite", "portfolio"])'
+        :key="ticker"
+        /> -->
         <v-layout row wrap>
 
           <!-- path -->
-          <v-flex xs6 class='my-1 px-1 text-xs-left'>
+          <v-flex v-if='ticker' xs6 class='my-1 text-xs-left'>
             <div class="hidden-sm-and-down pb-3" style='font-size:1.1rem'>
               <a
               style='cursor:pointer'
@@ -15,49 +20,40 @@
               >
               <b>{{ pageFrom ? pageFrom.toUpperCase() : '' }}</b>
               </a><span>
-                {{$route.params.ticker ? ' : '+ $route.params.ticker.toUpperCase() : ''}}
+                {{' : '+ $route.params.ticker.toUpperCase()}}
               </span>
             </div>
           </v-flex>
-          <v-flex xs6 class='my-1 text-xs-right'>
+          <!-- <v-flex xs6 class='my-1 text-xs-right'>
             <span v-if='getPageFromMethod(["stocks", "favorite"])'>
               <v-btn class='my-0' v-for='type in propsParams[pageFrom].icons' icon>
                 <v-icon out-in @click='iconAction(type, pageFrom)'>{{ type }}</v-icon>
               </v-btn>
             </span>
-          </v-flex>
-          <!-- code for favorite and portfolio -->
+          </v-flex> -->
+
           <!-- chart | quote -->
-          <v-flex v-if='getPageFromMethod(["favorite", "portfolio"])' xs12 md7 class='px-1 text-xs-left'>
-            <app-chart
+          <v-flex v-if='getPageFromMethod(["favorite", "portfolio","stocks"]) && ticker' xs12 class='text-xs-left'>
+            <app-chartwithtable
             :chartData='chartData'
             />
          </v-flex>
 
-         <!-- comments -->
-         <v-flex v-if='getPageFromMethod(["favorite", "portfolio"])' xs12 md5 class='px-1 text-xs-left'>
-           <app-comments :key='ticker' />
+         <!-- TickerStats -->
+         <v-flex v-if='getPageFromMethod(["portfolio"])' xs12 md6 class='pr-1 text-xs-left '>
+           <app-tickerstats
+           :key='ticker'
+           :ticker='ticker'
+           />
          </v-flex>
-
-          <!-- code for stocks -->
-          <!-- chart only -->
-          <v-flex v-if='getPageFromMethod(["stocks"])' xs12 class='px-1 text-xs-left'>
-            <app-chart
-            :chartData='chartData'
-            />
-         </v-flex>
-
-          <!-- TickerStats -->
-          <v-flex v-if='getPageFromMethod(["portfolio"])' xs12 md7 class=' px-1 text-xs-left '>
-            <app-tickerstats
-            :key='ticker'
-            :ticker='ticker'
-            />
+        <!-- PORTFOLIO PART CODE -->
+        <v-flex xs12 md6 class='pl-1' v-if='getPageFromMethod(["portfolio"])'>
+          <!-- comments -->
+          <v-flex v-if='getPageFromMethod(["favorite", "portfolio"])' xs12 class='px-1 text-xs-left'>
+            <app-comments :key='ticker' />
           </v-flex>
-
-
           <!-- bargain card -->
-          <v-flex v-if='getPageFromMethod(["favorite"])' xs12 class='text-xs-left'>
+          <v-flex v-if='getPageFromMethod(["favorite","portfolio"])' xs12 class='text-xs-left'>
             <div >
               <h5>Bargain</h5>
             </div>
@@ -66,27 +62,49 @@
             :company='company'
             />
           </v-flex>
-
-          <v-flex v-if='getPageFromMethod(["portfolio"])' xs12 md5 class=' px-1 text-xs-left'>
-            <div >
-              <h5>Bargain</h5>
-            </div>
-
-            <app-bargaincard
-            :company='company'
-            />
-          </v-flex>
+        </v-flex>
 
         <!-- news -->
-        <v-flex xs12 class='mt-3 px-1 text-xs-left'>
+        <v-flex xs12 class='mt-3 text-xs-left' v-if='getPageFromMethod(["portfolio", "stocks"])'>
           <div >
             <h5>News</h5>
           </div>
-
           <app-newscard
+          v-if='ticker'
           :news="companyNews"
           />
+        </v-flex>
 
+
+
+        <!-- FAVORITE PART CODE -->
+        <v-flex xs12 md4 v-if='getPageFromMethod(["favorite"])' class='pt-1'>
+          <!-- comments -->
+          <v-flex v-if='getPageFromMethod(["favorite", "portfolio"])' xs12 class='text-xs-left'>
+            <app-comments :key='ticker' />
+          </v-flex>
+          <!-- bargain card -->
+          <v-flex v-if='getPageFromMethod(["favorite","portfolio"])' xs12 class='text-xs-left'>
+            <div >
+              <h5>Bargain</h5>
+            </div>
+
+            <app-bargaincard
+            :company='company'
+            />
+          </v-flex>
+        </v-flex>
+
+
+        <!-- news -->
+        <v-flex xs12 md8 class='pl-1 text-xs-left' v-if='getPageFromMethod(["favorite"])'>
+          <div >
+            <h5>News</h5>
+          </div>
+          <app-newscard
+          v-if='ticker'
+          :news="companyNews"
+          />
         </v-flex>
 
       </v-layout>
@@ -115,10 +133,11 @@ export default {
     }
   },
   components: {
+    // appChartjs: () => import('../card/ChartJSPage'),
     appNewscard: () => import('../card/NewsCard'),
     appComments: () => import('../card/Comments'),
     appBargaincard: () => import('../card/BargainCard'),
-    appChart: () => import('../card/Chart'),
+    appChartwithtable: () => import('../card/ChartWithTable'),
     appTickerstats: () => import('../card/TickerStats'),
   },
   methods: {
@@ -144,6 +163,18 @@ export default {
           ticker: this.ticker,
           pageFrom: this.pageFrom,
         })
+
+
+        // check transitions between portfolio <==> favorite
+        const portfolioTickers = this.$store.getters[types.GET_PORTFOLIO_TICKERS]
+        const userDeals = this.$store.getters[types.GET_PORTFOLIO_USER_DEALS]
+        if(this.pageFrom === 'favorite' && portfolioTickers.findIndex(ticker => ticker === this.ticker) !== -1) {
+          this.pathMethod({pageFrom:"portfolio"})
+          this.$router.push({name:'portfolio'})
+
+        } else if (this.pageFrom === 'portfolio' && this.ticker && userDeals.findIndex(obj => obj['ticker'] === this.ticker) === -1) {
+          this.$router.push({name:'portfolio'})
+        }
 
         return company
       })()

@@ -1,5 +1,7 @@
 <template lang="html">
-  <v-card-text slot='cardActions' >
+  <v-card-text
+    slot='cardActions'
+   >
     <!--top level buttons buy|sell -->
     <span v-if='getPageFromMethod(["portfolio", "favorite"])'>
 

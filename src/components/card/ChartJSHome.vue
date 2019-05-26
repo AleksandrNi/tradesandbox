@@ -9,7 +9,6 @@
       </div>
       <div>
         <line-chart :chart-data="datacollectionRelative" :options="options1"></line-chart>
-        <button @click="fillData()">Randomize</button>
       </div>
     </v-flex>
 
@@ -21,7 +20,6 @@
       </div>
       <div>
         <line-chart :chart-data="datacollectionAbsolute" :options="options2"></line-chart>
-        <button @click="fillData()">Randomize</button>
       </div>
     </v-flex>
   </v-layout>
@@ -31,6 +29,7 @@
 <script>
   import LineChart from './chartjs/LineChart.js'
   import * as types from '../../store/types'
+  import {colorArray} from './chartjs/Colors'
 
   export default {
 
@@ -92,30 +91,8 @@
         const companies = this.$store.getters[types.GET_PORTFOLIO]
         const userDeals = this.$store.getters[types.GET_PORTFOLIO_USER_DEALS]
 
-        const colorArray = [
-          "Aqua","Aquamarine","Bisque","Blue",
-          "BlueViolet","Brown","BurlyWood","CadetBlue","Chartreuse",
-          "Chocolate","Coral","CornflowerBlue","Crimson",
-          "Cyan","DarkBlue","DarkCyan","DarkGoldenRod","DarkGreen","DarkMagenta",
-          "Darkorange","DarkOrchid","DarkRed","DarkSalmon","DarkSeaGreen",
-          "DarkSlateBlue","DarkSlateGray","DarkTurquoise","DarkViolet",
-          "DeepPink","DeepSkyBlue","DodgerBlue",
-          "FireBrick","ForestGreen","Fuchsia",
-          "Gold","GoldenRod", "Green","GreenYellow","HotPink","IndianRed",
-          "Indigo","Khaki", "LawnGreen","LightBlue","LightCoral","LightCyan",
-          "LightGoldenRodYellow","LightGreen","LightPink",
-          "LightSalmon","LightSeaGreen","LightSkyBlue",
-          "LightSteelBlue","Lime","LimeGreen",
-          "Magenta","Maroon","MediumAquaMarine","MediumBlue","MediumOrchid",
-          "MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise",
-          "MediumVioletRed","MidnightBlue","Navy","Olive","OliveDrab",
-          "Orange","OrangeRed","Orchid","PaleGoldenRod","PaleGreen",
-          "PaleTurquoise","PaleVioletRed","Peru",
-          "Pink","Plum","PowderBlue","Purple","Red",
-          "RoyalBlue","SaddleBrown","Salmon","SandyBrown",
-          "SeaGreen","Sienna","Silver","SkyBlue",
-          "SlateBlue","SpringGreen", "SteelBlue","Tan","Teal","Thistle","Tomato",
-          "Turquoise","Violet", "Yellow","YellowGreen"];
+
+
         const randomColorIndex = parseInt(Math.random()*colorArray.length)
 
         const selectedCompaniesAbsolute = [];
@@ -158,41 +135,8 @@
 
 
             // create Data array to render into chart
-            const lowPriceTargetArray = []
-            const topPriceTargetArray = []
-
-            if (lowPriceTarget && typeof lowPriceTarget === 'number') {
-
-              for(let i in extraData[0]) {
-                lowPriceTargetArray[i] = lowPriceTarget
-              }
-              selectedCompaniesAbsolute.push({
-                label: this.tickers[companyIndex].toUpperCase() + ' Low limit',
-                backgroundColor: 'tomato',
-                borderColor: 'tomato',
-                borderWidth: 0.5,
-                fill: false,
-                data: lowPriceTargetArray,
-                pointRadius: 0.8,
-
-              })
-            }
-            if (topPriceTarget && typeof(topPriceTarget) === 'number') {
-              for(let i in extraData[0]) {
-                topPriceTargetArray[i] = topPriceTarget
-              }
-              selectedCompaniesAbsolute.push({
-                label: this.tickers[companyIndex].toUpperCase() + ' Top limit',
-                backgroundColor: 'green',
-                borderColor: 'green',
-                borderWidth: 0.5,
-                fill: false,
-                data: topPriceTargetArray,
-                pointRadius: 0.8,
-              })
-            }
-
-
+            
+            // DATA ABSOLUTE | RELATIVE BLOCK
             const companyEntries = {
                 label: extraData[0],
                 averagePrice: extraData[1],
@@ -213,6 +157,44 @@
               fill: false,
               data: companyEntries.relative
             })
+
+
+            // LOW | TOP LIMITS BLOCK
+            const lowPriceTargetArray = []
+            const topPriceTargetArray = []
+
+            if (topPriceTarget && typeof(topPriceTarget) === 'number') {
+              for(let i in extraData[0]) {
+                topPriceTargetArray[i] = topPriceTarget
+              }
+              selectedCompaniesAbsolute.push({
+                label: this.tickers[companyIndex].toUpperCase() + ' Top limit',
+                backgroundColor: 'green',
+                borderColor: 'green',
+                borderWidth: 0.5,
+                fill: false,
+                data: topPriceTargetArray,
+                pointRadius: 0.8,
+              })
+            }
+
+            if (lowPriceTarget && typeof lowPriceTarget === 'number') {
+
+              for(let i in extraData[0]) {
+                lowPriceTargetArray[i] = lowPriceTarget
+              }
+              selectedCompaniesAbsolute.push({
+                label: this.tickers[companyIndex].toUpperCase() + ' Low limit',
+                backgroundColor: 'tomato',
+                borderColor: 'tomato',
+                borderWidth: 0.5,
+                fill: false,
+                data: lowPriceTargetArray,
+                pointRadius: 0.8,
+
+              })
+            }
+
 
           return true
         })

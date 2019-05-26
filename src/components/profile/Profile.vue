@@ -20,7 +20,7 @@ export default {
     }
   },
   components: {
-        appChartjs: () => import('../card/ChartJS'),
+        appChartjs: () => import('../card/ChartJSHome'),
   },
   methods:{
     pathMethod,
